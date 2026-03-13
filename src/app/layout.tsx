@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -18,12 +16,12 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "Zithelo Real Estate | Modern Living in Lagos",
-  description: "Zithelo Real Estate develops thoughtfully designed properties in prime Lagos locations, focused on long-term value, quality living, and architectural integrity.",
-  keywords: ["real estate", "Lagos", "property", "development", "Ikeja", "Yaba", "modern living"],
+  title: "Zithelo Homes | Coming Soon",
+  description: "More Than a Home, A Legacy. Premium homes in prime Lagos locations.",
+  keywords: ["Zithelo Homes", "real estate", "Lagos", "property", "Victoria Island", "luxury homes"],
   openGraph: {
-    title: "Zithelo Real Estate | Modern Living in Lagos",
-    description: "Thoughtfully designed properties in prime Lagos locations.",
+    title: "Zithelo Homes | Coming Soon",
+    description: "More Than a Home, A Legacy. Premium homes in prime Lagos locations.",
     type: "website",
   },
 };
@@ -38,9 +36,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${cormorant.variable} antialiased`}
       >
-        <Header />
-        <main>{children}</main>
-        <Footer />
+        {children}
       </body>
     </html>
   );
