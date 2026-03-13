@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+:root {
+  /* Premium neutral palette */
+  --color-cream: #FAF9F7;
+  --color-stone: #F5F4F2;
+  --color-warm-gray: #E8E6E3;
+  --color-charcoal: #2C2C2C;
+  --color-charcoal-light: #4A4A4A;
+  --color-black: #1A1A1A;
+  
+  /* Brand Colors - Zithelo */
+  --color-navy: #1E3A5F;
+  --color-navy-light: #2A4A73;
+  --color-navy-dark: #152C4A;
+  --color-teal: #3ECFA5;
+  --color-teal-light: #5EDAB5;
+  --color-teal-dark: #2DB88E;
+  --color-orange: #F26522;
+  
+  /* Accent - using teal for modern premium look */
+  --color-accent: var(--color-teal);
+  --color-accent-dark: var(--color-teal-dark);
+  
+  /* Semantic */
+  --background: var(--color-cream);
+  --foreground: var(--color-charcoal);
+  --muted: var(--color-charcoal-light);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --font-sans: var(--font-inter);
+  --font-serif: var(--font-cormorant);
+}
+
+/* Smooth scrolling with reduced motion respect */
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typography utilities */
+.font-serif {
+  font-family: var(--font-serif), Georgia, serif;
+}
+
+/* Selection styling */
+::selection {
+  background-color: var(--color-teal);
+  color: var(--color-navy-dark);
+}
+
+/* Focus visible for accessibility */
+:focus-visible {
+  outline: 2px solid var(--color-teal);
+  outline-offset: 2px;
+}
