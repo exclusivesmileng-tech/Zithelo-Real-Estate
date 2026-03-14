@@ -14,7 +14,6 @@ const heroImages = [
 export function Hero() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isContactOpen, setIsContactOpen] = useState(false);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -23,48 +22,36 @@ export function Hero() {
     return () => clearInterval(interval);
   }, []);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width - 0.5;
-    const y = (e.clientY - rect.top) / rect.height - 0.5;
-    setMousePosition({ x, y });
-  };
-
-  const handleMouseLeave = () => {
-    setMousePosition({ x: 0, y: 0 });
-  };
+  // Ken Burns effect patterns for variety
+  const kenBurnsPatterns = [
+    { scale: [1.1, 1.2], x: [0, -20], y: [0, -10] },
+    { scale: [1.15, 1.05], x: [-15, 15], y: [-10, 10] },
+    { scale: [1.1, 1.25], x: [10, -10], y: [5, -15] },
+    { scale: [1.2, 1.1], x: [-10, 10], y: [-5, 5] },
+  ];
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Animated Background Images */}
-      <div 
-        className="absolute inset-0"
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        style={{ perspective: '1000px' }}
-      >
+      <div className="absolute inset-0">
         <AnimatePresence mode="sync">
           <motion.div
             key={currentIndex}
-            initial={{ opacity: 0, scale: 1.1 }}
+            initial={{ opacity: 0 }}
             animate={{ 
-              opacity: 1, 
-              scale: 1,
-              rotateX: mousePosition.y * 10,
-              rotateY: mousePosition.x * 10,
+              opacity: 1,
+              scale: kenBurnsPatterns[currentIndex].scale,
+              x: kenBurnsPatterns[currentIndex].x,
+              y: kenBurnsPatterns[currentIndex].y,
             }}
             exit={{ opacity: 0 }}
             transition={{ 
               opacity: { duration: 1.5, ease: [0.25, 0.1, 0.25, 1] },
-              scale: { duration: 1.5, ease: [0.25, 0.1, 0.25, 1] },
-              rotateX: { duration: 0.3, ease: "easeOut" },
-              rotateY: { duration: 0.3, ease: "easeOut" }
+              scale: { duration: 15, ease: "linear" },
+              x: { duration: 15, ease: "linear" },
+              y: { duration: 15, ease: "linear" },
             }}
             className="absolute inset-0"
-            style={{ 
-              transformStyle: 'preserve-3d',
-              willChange: 'transform'
-            }}
           >
             <Image
               src={heroImages[currentIndex].src}
@@ -155,7 +142,7 @@ export function Hero() {
           className="mb-6 overflow-hidden"
         >
           <motion.p
-            animate={{ 
+            animate={{
               textShadow: [
                 "0 0 4px rgba(62, 207, 165, 0.3)",
                 "0 0 20px rgba(62, 207, 165, 0.6)",
@@ -163,23 +150,32 @@ export function Hero() {
               ]
             }}
             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            className="text-sm md:text-base uppercase tracking-[0.3em] text-[var(--color-teal)] inline-flex"
+            className="text-base md:text-lg tracking-wide text-[var(--color-teal)] inline-flex items-center italic font-light"
           >
-            {"Coming Soon".split("").map((char, index) => (
+            {"Coming Soon...".split("").map((char, index) => (
               <motion.span
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0 }}
+                animate={{ 
+                  opacity: 1,
+                }}
                 transition={{
-                  duration: 0.4,
-                  delay: index * 0.05,
-                  ease: [0.25, 0.1, 0.25, 1]
+                  duration: 0.05,
+                  delay: index * 0.1,
+                  repeat: Infinity,
+                  repeatDelay: 2,
+                  repeatType: "loop"
                 }}
                 className={char === " " ? "w-2" : ""}
               >
                 {char}
               </motion.span>
             ))}
+            <motion.span
+              animate={{ opacity: [1, 0] }}
+              transition={{ duration: 0.8, repeat: Infinity, repeatType: "reverse" }}
+              className="ml-1 w-0.5 h-5 bg-[var(--color-teal)]"
+            />
           </motion.p>
         </motion.div>
 
@@ -187,11 +183,25 @@ export function Hero() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.1, ease: [0.25, 0.1, 0.25, 1] }}
-          className="font-serif text-4xl md:text-6xl lg:text-7xl text-white leading-tight tracking-tight"
+          className="font-serif text-4xl md:text-6xl lg:text-7xl leading-tight tracking-tight"
         >
-          Welcome to
+          <span className="text-white/90">Welcome to</span>
           <br />
-          Zithelo Homes
+          <motion.span
+            animate={{
+              backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
+            }}
+            transition={{
+              backgroundPosition: {
+                duration: 4,
+                repeat: Infinity,
+                ease: "linear"
+              }
+            }}
+            className="bg-gradient-to-r from-white via-[var(--color-teal)] via-cyan-300 to-white bg-clip-text text-transparent bg-[length:200%_100%] drop-shadow-[0_0_30px_rgba(45,212,191,0.4)]"
+          >
+            Zithelo Homes
+          </motion.span>
         </motion.h1>
 
         {/* Premium Tagline with elegant styling */}

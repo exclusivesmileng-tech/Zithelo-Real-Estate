@@ -17,6 +17,8 @@
   --color-teal-light: #5EDAB5;
   --color-teal-dark: #2DB88E;
   --color-orange: #F26522;
+  --color-orange-light: #FF7F45;
+  --color-orange-dark: #D9561D;
   
   /* Accent - using teal for modern premium look */
   --color-accent: var(--color-teal);
