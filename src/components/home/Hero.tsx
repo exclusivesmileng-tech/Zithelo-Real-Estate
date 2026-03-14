@@ -5,16 +5,16 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 
 const heroImages = [
-  { src: "/images/6.jpeg", alt: "Elegant architecture" },
-  { src: "/images/6.jpeg", alt: "Elegant architecture" },
-  { src: "/images/2.jpeg", alt: "Premium Lagos residence" },
-  { src: "/images/3.jpeg", alt: "Modern apartment interior" },
-  { src: "/images/4.jpeg", alt: "Luxury living space" },
+  { src: "/images/6.png", alt: "Elegant architecture" },
+  { src: "/images/4.png", alt: "Luxury living space" },
+  { src: "/images/2.png", alt: "Premium Lagos residence" },
+  { src: "/images/3.png", alt: "Modern apartment interior" },
 ];
 
 export function Hero() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isContactOpen, setIsContactOpen] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -23,18 +23,48 @@ export function Hero() {
     return () => clearInterval(interval);
   }, []);
 
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    setMousePosition({ x, y });
+  };
+
+  const handleMouseLeave = () => {
+    setMousePosition({ x: 0, y: 0 });
+  };
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Animated Background Images */}
-      <div className="absolute inset-0">
+      <div 
+        className="absolute inset-0"
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        style={{ perspective: '1000px' }}
+      >
         <AnimatePresence mode="sync">
           <motion.div
             key={currentIndex}
             initial={{ opacity: 0, scale: 1.1 }}
-            animate={{ opacity: 1, scale: 1 }}
+            animate={{ 
+              opacity: 1, 
+              scale: 1,
+              rotateX: mousePosition.y * 10,
+              rotateY: mousePosition.x * 10,
+            }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 1.5, ease: [0.25, 0.1, 0.25, 1] }}
+            transition={{ 
+              opacity: { duration: 1.5, ease: [0.25, 0.1, 0.25, 1] },
+              scale: { duration: 1.5, ease: [0.25, 0.1, 0.25, 1] },
+              rotateX: { duration: 0.3, ease: "easeOut" },
+              rotateY: { duration: 0.3, ease: "easeOut" }
+            }}
             className="absolute inset-0"
+            style={{ 
+              transformStyle: 'preserve-3d',
+              willChange: 'transform'
+            }}
           >
             <Image
               src={heroImages[currentIndex].src}
@@ -49,8 +79,71 @@ export function Hero() {
         
         {/* Premium overlay gradient */}
         <div className="absolute inset-0 bg-gradient-to-b from-[var(--color-navy-dark)]/70 via-[var(--color-navy)]/50 to-[var(--color-navy-dark)]/80 z-10" />
-        {/* Architectural texture overlay */}
-        <div className="absolute inset-0 opacity-5 bg-[url('/images/hero-pattern.svg')] z-10" />
+        
+        {/* Vignette effect for premium feel */}
+        <div className="absolute inset-0 z-10" style={{
+          background: "radial-gradient(ellipse at center, transparent 0%, transparent 50%, rgba(26, 26, 26, 0.4) 100%)"
+        }} />
+        
+        {/* Subtle animated grain texture */}
+        <div className="absolute inset-0 opacity-[0.03] z-10 pointer-events-none" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+        }} />
+      </div>
+
+      {/* Floating particles for luxury ambiance */}
+      <div className="absolute inset-0 z-10 overflow-hidden pointer-events-none">
+        {[...Array(6)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-1 h-1 bg-[var(--color-teal)]/30 rounded-full"
+            initial={{
+              x: `${20 + i * 15}%`,
+              y: "110%",
+              opacity: 0,
+            }}
+            animate={{
+              y: "-10%",
+              opacity: [0, 0.6, 0.6, 0],
+            }}
+            transition={{
+              duration: 8 + i * 2,
+              repeat: Infinity,
+              delay: i * 1.5,
+              ease: "linear",
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Corner accent lines */}
+      <div className="absolute top-8 left-8 w-20 h-20 z-20 pointer-events-none hidden md:block">
+        <motion.div 
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ duration: 1, delay: 0.5 }}
+          className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-[var(--color-teal)]/60 to-transparent origin-left"
+        />
+        <motion.div 
+          initial={{ scaleY: 0 }}
+          animate={{ scaleY: 1 }}
+          transition={{ duration: 1, delay: 0.7 }}
+          className="absolute top-0 left-0 w-px h-full bg-gradient-to-b from-[var(--color-teal)]/60 to-transparent origin-top"
+        />
+      </div>
+      <div className="absolute bottom-8 right-8 w-20 h-20 z-20 pointer-events-none hidden md:block">
+        <motion.div 
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ duration: 1, delay: 0.5 }}
+          className="absolute bottom-0 right-0 w-full h-px bg-gradient-to-l from-[var(--color-teal)]/60 to-transparent origin-right"
+        />
+        <motion.div 
+          initial={{ scaleY: 0 }}
+          animate={{ scaleY: 1 }}
+          transition={{ duration: 1, delay: 0.7 }}
+          className="absolute bottom-0 right-0 w-px h-full bg-gradient-to-t from-[var(--color-teal)]/60 to-transparent origin-bottom"
+        />
       </div>
 
       {/* Content */}
@@ -101,98 +194,219 @@ export function Hero() {
           Zithelo Homes
         </motion.h1>
 
-        <motion.p
+        {/* Premium Tagline with elegant styling */}
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-          className="mt-8 text-lg md:text-xl text-[var(--color-teal-light)] max-w-2xl mx-auto"
+          className="mt-10 max-w-2xl mx-auto"
         >
-          Premium residences in prime Lagos locations
-        </motion.p>
+          <p className="text-lg md:text-xl text-white/90 font-light italic tracking-wide">
+            <motion.span
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4, duration: 0.6 }}
+              className="text-[var(--color-teal)]"
+            >
+              &ldquo;
+            </motion.span>
+            <motion.span
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5, duration: 0.8 }}
+            >
+              More Than a Home,{" "}
+            </motion.span>
+            <motion.span
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.7, duration: 0.8 }}
+              className="text-[var(--color-teal-light)] font-normal"
+            >
+              A Legacy
+            </motion.span>
+            <motion.span
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.9, duration: 0.6 }}
+              className="text-[var(--color-teal)]"
+            >
+              &rdquo;
+            </motion.span>
+          </p>
+          
+          {/* Subtitle */}
+          <motion.div
+            className="mt-6 text-center"
+          >
+            <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-lg md:text-2xl lg:text-3xl font-bold tracking-wider uppercase">
+              {['Premium', 'real', 'estate', 'company'].map((word, i) => (
+                <motion.span
+                  key={i}
+                  initial={{ opacity: 0, y: 30, scale: 0.8 }}
+                  animate={{ 
+                    opacity: 1, 
+                    y: 0, 
+                    scale: 1,
+                    backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
+                  }}
+                  transition={{ 
+                    opacity: { delay: 1 + i * 0.15, duration: 0.6 },
+                    y: { delay: 1 + i * 0.15, duration: 0.6, type: "spring", stiffness: 100 },
+                    scale: { delay: 1 + i * 0.15, duration: 0.6, type: "spring", stiffness: 100 },
+                    backgroundPosition: {
+                      duration: 3,
+                      repeat: Infinity,
+                      ease: "linear",
+                      delay: 1 + i * 0.15
+                    }
+                  }}
+                  className={
+                    i === 2 || i === 3
+                      ? "bg-gradient-to-r from-[var(--color-teal)] via-cyan-300 to-[var(--color-teal)] bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(45,212,191,0.6)] bg-[length:200%_100%]"
+                      : "bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent bg-[length:200%_100%]"
+                  }
+                >
+                  {word}
+                </motion.span>
+              ))}
+            </div>
+          </motion.div>
+        </motion.div>
+
+        {/* Decorative divider */}
+        <motion.div
+          initial={{ scaleX: 0, opacity: 0 }}
+          animate={{ scaleX: 1, opacity: 1 }}
+          transition={{ duration: 1, delay: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
+          className="mt-10 flex items-center justify-center gap-3"
+        >
+          <div className="w-8 h-px bg-gradient-to-r from-transparent to-[var(--color-teal)]/60" />
+          <div className="w-1.5 h-1.5 bg-[var(--color-teal)] rotate-45" />
+          <div className="w-8 h-px bg-gradient-to-l from-transparent to-[var(--color-teal)]/60" />
+        </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
-          className="mt-12"
+          className="mt-10"
         >
-          <button
+          <motion.button
             onClick={() => setIsContactOpen(true)}
-            className="inline-flex items-center justify-center px-10 py-4 text-sm tracking-wide transition-all duration-300 bg-[var(--color-teal)] hover:bg-[var(--color-teal-dark)] text-[var(--color-navy-dark)] font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-teal)] focus-visible:ring-offset-2"
+            whileHover={{ scale: 1.02, y: -2 }}
+            whileTap={{ scale: 0.98 }}
+            className="group relative inline-flex items-center justify-center px-12 py-4 text-sm uppercase tracking-[0.2em] transition-all duration-500 bg-[var(--color-teal)] hover:bg-[var(--color-teal-dark)] text-[var(--color-navy-dark)] font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-teal)] focus-visible:ring-offset-2 overflow-hidden"
           >
-            Contact Us
-          </button>
+            {/* Button shine effect */}
+            <span className="absolute inset-0 w-full h-full">
+              <span className="absolute top-0 left-[-100%] w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:left-[100%] transition-all duration-700 ease-out" />
+            </span>
+            <span className="relative">Contact Us</span>
+          </motion.button>
         </motion.div>
 
-        {/* Image Indicators */}
+        {/* Image Indicators - refined */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 0.6 }}
-          className="mt-16 flex justify-center gap-2"
+          className="mt-16 flex justify-center items-center gap-3"
         >
           {heroImages.map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentIndex(index)}
-              className={`h-1 rounded-full transition-all duration-500 ${
+              className={`relative transition-all duration-500 ${
                 index === currentIndex 
-                  ? "w-8 bg-[var(--color-teal)]" 
-                  : "w-2 bg-white/30 hover:bg-white/50"
+                  ? "w-10 h-1" 
+                  : "w-2 h-2 hover:w-3 hover:h-3"
               }`}
               aria-label={`Go to slide ${index + 1}`}
-            />
+            >
+              <span className={`absolute inset-0 rounded-full transition-all duration-500 ${
+                index === currentIndex 
+                  ? "bg-[var(--color-teal)] rounded-sm" 
+                  : "bg-white/30 hover:bg-white/60"
+              }`} />
+              {index === currentIndex && (
+                <motion.span 
+                  layoutId="activeIndicator"
+                  className="absolute inset-0 rounded-sm ring-2 ring-[var(--color-teal)]/30 ring-offset-2 ring-offset-transparent"
+                />
+              )}
+            </button>
           ))}
         </motion.div>
       </div>
 
-      {/* Scroll Indicator */}
+      {/* Scroll Indicator - Premium */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1, delay: 1 }}
-        className="absolute bottom-12 left-1/2 -translate-x-1/2 z-20"
+        className="absolute bottom-12 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-3"
       >
+        <motion.span 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.6 }}
+          transition={{ delay: 1.2 }}
+          className="text-[10px] uppercase tracking-[0.3em] text-white/50"
+        >
+          Scroll
+        </motion.span>
         <motion.div
           animate={{ y: [0, 8, 0] }}
           transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-          className="w-6 h-10 border-2 border-[var(--color-teal)]/50 rounded-full flex justify-center pt-2"
+          className="relative w-6 h-10 border border-[var(--color-teal)]/40 rounded-full flex justify-center pt-2"
         >
-          <div className="w-1 h-2 bg-[var(--color-teal)] rounded-full" />
+          <motion.div 
+            animate={{ 
+              y: [0, 12, 0],
+              opacity: [1, 0.3, 1]
+            }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+            className="w-1 h-2 bg-[var(--color-teal)] rounded-full" 
+          />
+          {/* Glow effect */}
+          <div className="absolute inset-0 rounded-full bg-[var(--color-teal)]/5 blur-sm" />
         </motion.div>
       </motion.div>
 
-      {/* Floating Image Thumbnails - Desktop Only */}
-      <div className="hidden lg:block absolute right-8 top-1/2 -translate-y-1/2 z-20">
+      {/* Floating Image Thumbnails - Desktop Only with 3D Effect */}
+      <div className="gallery-3d-container hidden lg:block absolute right-8 top-1/2 -translate-y-1/2 z-20">
         <motion.div
           initial={{ opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.8 }}
-          className="flex flex-col gap-3"
+          className="flex flex-col gap-4"
         >
           {heroImages.slice(0, 4).map((image, index) => (
-            <motion.button
+            <button
               key={index}
               onClick={() => setCurrentIndex(index)}
-              whileHover={{ scale: 1.05, x: -5 }}
-              whileTap={{ scale: 0.95 }}
-              className={`relative w-16 h-16 rounded-lg overflow-hidden border-2 transition-all duration-300 ${
-                index === currentIndex 
-                  ? "border-[var(--color-teal)] shadow-lg shadow-[var(--color-teal)]/20" 
-                  : "border-white/20 hover:border-white/50"
-              }`}
+              className={`thumbnail-3d ${index === currentIndex ? 'active' : ''}`}
             >
-              <Image
-                src={image.src}
-                alt={image.alt}
-                fill
-                className="object-cover"
-                sizes="64px"
-              />
+              <div className="thumbnail-3d-image">
+                <Image
+                  src={image.src}
+                  alt={image.alt}
+                  fill
+                  className="object-cover"
+                  sizes="80px"
+                />
+              </div>
+              
               {index !== currentIndex && (
-                <div className="absolute inset-0 bg-[var(--color-navy-dark)]/50" />
+                <div className="thumbnail-3d-overlay" />
               )}
-            </motion.button>
+              
+              <div className="thumbnail-3d-shine" />
+              
+              {index === currentIndex && (
+                <div className="thumbnail-3d-indicator" />
+              )}
+            </button>
           ))}
         </motion.div>
       </div>
